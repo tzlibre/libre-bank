@@ -19,27 +19,27 @@ The contract allows 4 actions: 1) ~User deposit~, 2) ~User withdraw~, 3) ~Owner 
 *** ~User deposit~
 Triggered when a transaction of amount ~a~ is sent to the contract by a user. Deposited funds can be borrowed by the contract owner.
 
-#+BEGIN_CODE
+#+BEGIN_SRC
 $ tezos-client transfer <a> from <user-address> to <bond-bank>
-#+END_CODE
+#+END_SRC
 
 *** ~User withdraw~
 Triggered by a user to withdraw funds (and therefore stop lending XTZ to the contract owner).
 
-#+BEGIN_CODE
+#+BEGIN_SRC
 $ tezos-client transfer 0 from <user-address> to <bond-bank>
-#+END_CODE
+#+END_SRC
 
 *** ~Owner borrow~
 Triggered by contract owner to borrow funds from the contract. The maximum amount that can be borrowed is computed as ~(1 - collat_coef) * total_deposited_funds~.
 
-#+BEGIN_CODE
+#+BEGIN_SRC
 $ tezos-client transfer 0 from <owner-address> to <bond-bank>
-#+END_CODE
+#+END_SRC
 
 *** ~Owner payback~
 Triggered by contract owner to deposit funds back into the contract. 
 
-#+BEGIN_CODE
+#+BEGIN_SRC
 $ tezos-client transfer <payback-amount> from <owner-address> to <bond-bank>
-#+END_CODE
+#+END_SRC
