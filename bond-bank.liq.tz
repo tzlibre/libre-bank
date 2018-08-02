@@ -1,0 +1,779 @@
+parameter
+  unit;
+storage
+  (pair
+    address
+    (pair
+      mutez
+      (pair
+        nat
+        (pair
+          nat
+          (pair
+            mutez
+            (pair
+              mutez
+              (map
+                address
+                mutez)))))));
+code
+  {
+    DUP ;
+    DIP
+      {
+        CDR ;
+      }
+      ;
+    CAR ;
+    PUSH @one_prec6
+      nat
+      1000000 ;
+    DUP @one_prec6 ;
+    LAMBDA
+      (pair
+        (pair
+          mutez
+          nat)
+        nat)
+      mutez
+      {
+        RENAME @closure_env_slash_8
+          ;
+        DUP ;
+        CDR @one_prec6_slash_3 ;
+        DUUP ;
+        CAR ;
+        CDR @coeff ;
+        DUUUP ;
+        CAR ;
+        CAR @amount ;
+        MUL ;
+        EDIV ;
+        IF_NONE
+          {
+            PUSH
+              string
+              "Division error in `apply_coeff`." ;
+            FAILWITH ;
+          }
+          {
+            CAR ;
+          }
+          ;
+        DIP
+          {
+            DROP ;
+          }
+          ;
+      }
+      ;
+    PAIR @apply_coeff ;
+    LAMBDA @get_contract
+      address
+      (contract
+        unit)
+      {
+        RENAME @a_slash_24
+          ;
+        DUP @a ;
+        CONTRACT
+          unit
+          ;
+        IF_NONE
+          {
+            PUSH
+              string
+              "Wrong address." ;
+            FAILWITH ;
+          }
+          {}
+          ;
+        DIP
+          {
+            DROP ;
+          }
+          ;
+      }
+      ;
+    SOURCE @source ;
+    AMOUNT @amount ;
+    BALANCE @contract_balance ;
+    DUUUUUUUUP @storage ;
+    DUP ;
+    CAR ;
+    DUUUUUP @source ;
+    COMPARE ;
+    NEQ ;
+    PUSH
+      mutez
+      0 ;
+    DUUUUUP @amount ;
+    COMPARE ;
+    GT ;
+    AND ;
+    IF
+      {
+        DUP ;
+        CDAR @min_deposit ;
+        DUUUUP @amount ;
+        COMPARE ;
+        LT ;
+        IF
+          {
+            PUSH
+              string
+              "Deposited amount is too small." ;
+            FAILWITH ;
+          }
+          {
+            UNIT ;
+          }
+          ;
+        DROP ;
+        DUP @s ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        DROP ;
+        DUUUUUUUP ;
+        CDDDDDDR ;
+        DUUUUUUUUP ;
+        CDDDDDDR ;
+        DUUUUUUUUUUUUP @source ;
+        GET ;
+        IF_NONE
+          {
+            DUUUUUUUUUUP @amount ;
+          }
+          {
+            DUUUUUUUUUUUP @amount ;
+            SWAP ;
+            ADD ;
+          }
+          ;
+        RENAME @user_balance
+          ;
+        DUUUUUUUUUUUUP @source ;
+        DIP
+          {
+            SOME ;
+          }
+          ;
+        UPDATE ;
+        SWAP ;
+        PAIR ;
+        SWAP ;
+        PAIR ;
+        SWAP ;
+        PAIR ;
+        SWAP ;
+        PAIR ;
+        SWAP ;
+        PAIR ;
+        SWAP ;
+        PAIR @s ;
+        DUP @s ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        CDR ;
+        DUUUUUUUUUP @amount ;
+        DUUUUUUUP ;
+        DIIIIIIIP
+          {
+            DROP ;
+          }
+          ;
+        CDDDDAR ;
+        ADD ;
+        PAIR ;
+        SWAP ;
+        PAIR ;
+        SWAP ;
+        PAIR ;
+        SWAP ;
+        PAIR ;
+        SWAP ;
+        PAIR @s ;
+        NIL
+          operation
+          ;
+        PAIR ;
+      }
+      {
+        DUP ;
+        CAR ;
+        DUUUUUP @source ;
+        COMPARE ;
+        NEQ ;
+        PUSH
+          mutez
+          0 ;
+        DUUUUUP @amount ;
+        COMPARE ;
+        EQ ;
+        AND ;
+        IF
+          {
+            DUP ;
+            CDDDDDDR ;
+            DUUUUUP @source ;
+            GET ;
+            IF_NONE
+              {
+                PUSH
+                  string
+                  "Only depositors can withdraw." ;
+                FAILWITH ;
+              }
+              {}
+              ;
+            RENAME @user_balance
+              ;
+            DUUUP @contract_balance ;
+            DUUP @user_balance ;
+            COMPARE ;
+            GT ;
+            IF
+              {
+                PUSH
+                  string
+                  "Withdraw amount greater than current contract balance." ;
+                FAILWITH ;
+              }
+              {
+                UNIT ;
+              }
+              ;
+            DROP ;
+            DUUP @s ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            CDR ;
+            DUUUUUUP @user_balance ;
+            DUUUUUUUUP ;
+            CDDDDAR ;
+            SUB ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR @s ;
+            DUP @s ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            DROP ;
+            DUUUUUUUP ;
+            CDDDDDDR ;
+            PUSH
+              (option
+                mutez)
+              None ;
+            DUUUUUUUUUUUUUUP @source ;
+            UPDATE ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR @s ;
+            DUUUUUUUUUP @apply_coeff ;
+            DUUP ;
+            CDDAR ;
+            DUUUUUP @user_balance ;
+            PAIR ;
+            DIP
+              {
+                DUP ;
+                CAR ;
+                SWAP ;
+                CDR ;
+              }
+              ;
+            PAIR ;
+            EXEC @fee_amount ;
+            DUUUUUUUUUP @get_contract ;
+            DUUUP ;
+            CAR ;
+            EXEC @owner_c ;
+            DUUP @fee_amount ;
+            UNIT ;
+            TRANSFER_TOKENS @op_fee ;
+            DUUUUUUUUUUP @get_contract ;
+            DUUUUUUUUUUP @source ;
+            EXEC @source_c ;
+            DUUUP @fee_amount ;
+            DUUUUUUUP @user_balance ;
+            SUB @withdraw_amount ;
+            UNIT ;
+            TRANSFER_TOKENS @op_withdraw ;
+            DUUUUP @s ;
+            NIL
+              operation
+              ;
+            DUUUP @op_withdraw ;
+            DIIIP
+              {
+                DROP ;
+              }
+              ;
+            DIIIIP
+              {
+                DROP ;
+                DROP ;
+                DROP ;
+                DROP ;
+              }
+              ;
+            CONS ;
+            DUUUP ;
+            DIIIP
+              {
+                DROP ;
+              }
+              ;
+            CONS ;
+            PAIR ;
+          }
+          {
+            DUP ;
+            CAR ;
+            DUUUUUP @source ;
+            COMPARE ;
+            EQ ;
+            PUSH
+              mutez
+              0 ;
+            DUUUUUP @amount ;
+            COMPARE ;
+            EQ ;
+            AND ;
+            IF
+              {
+                DUUUUUUUP @one_prec6 ;
+                LAMBDA
+                  (pair
+                    nat
+                    nat)
+                  nat
+                  {
+                    RENAME @closure_env_slash_14
+                      ;
+                    DUP ;
+                    CAR @coeff_slash_15 ;
+                    DUUP ;
+                    CDR @one_prec6_slash_3 ;
+                    SUB ;
+                    DUP ;
+                    ABS ;
+                    SWAP ;
+                    GE ;
+                    IF
+                      {}
+                      {
+                        PUSH
+                          string
+                          "Invalid coefficient value in `get_coeff_compl`." ;
+                        FAILWITH ;
+                      }
+                      ;
+                    DIP
+                      {
+                        DROP ;
+                      }
+                      ;
+                  }
+                  ;
+                PAIR @get_coeff_compl ;
+                DUUUUUUUP @apply_coeff ;
+                PAIR ;
+                LAMBDA
+                  (pair
+                    (pair
+                      mutez
+                      nat)
+                    (pair
+                      (pair
+                        (lambda
+                          (pair
+                            (pair
+                              mutez
+                              nat)
+                            nat)
+                          mutez)
+                        nat)
+                      (pair
+                        (lambda
+                          (pair
+                            nat
+                            nat)
+                          nat)
+                        nat)))
+                  mutez
+                  {
+                    RENAME @closure_env_slash_19
+                      ;
+                    DUP ;
+                    CDAR @apply_coeff_slash_13 ;
+                    DUUP ;
+                    CDDR @get_coeff_compl_slash_18 ;
+                    DUUUP ;
+                    CAR ;
+                    CDR @collat_coeff ;
+                    DIP
+                      {
+                        DUP ;
+                        CAR ;
+                        SWAP ;
+                        CDR ;
+                      }
+                      ;
+                    PAIR ;
+                    EXEC ;
+                    DUUUP ;
+                    CAR ;
+                    CAR @deposited ;
+                    PAIR ;
+                    DIP
+                      {
+                        DUP ;
+                        CAR ;
+                        SWAP ;
+                        CDR ;
+                      }
+                      ;
+                    DIIIP
+                      {
+                        DROP ;
+                      }
+                      ;
+                    PAIR ;
+                    EXEC ;
+                  }
+                  ;
+                PAIR @get_compl_collat_value ;
+                DUUP ;
+                CDDDAR ;
+                DUUUP ;
+                CDDDDAR ;
+                PAIR ;
+                DIP
+                  {
+                    DUP ;
+                    CAR ;
+                    SWAP ;
+                    CDR ;
+                  }
+                  ;
+                PAIR ;
+                EXEC @max_borrowing ;
+                DUUP ;
+                CDDDDDAR ;
+                DUUP @max_borrowing ;
+                COMPARE ;
+                LT ;
+                IF
+                  {
+                    PUSH
+                      string
+                      "No available funds to borrow: contract is under-collateralized." ;
+                    FAILWITH ;
+                  }
+                  {
+                    UNIT ;
+                  }
+                  ;
+                DROP ;
+                DUUUP @contract_balance ;
+                DUUUP ;
+                CDDDDDAR ;
+                DUUUP @max_borrowing ;
+                SUB ;
+                PAIR ;
+                DUP ;
+                CAR @a ;
+                DUUP ;
+                CDR @b ;
+                DUP @b ;
+                DUUUP @a ;
+                COMPARE ;
+                GT ;
+                IF
+                  {
+                    DUP @b ;
+                  }
+                  {
+                    DUUP @a ;
+                  }
+                  ;
+                DIP
+                  {
+                    DROP ;
+                    DROP ;
+                    DROP ;
+                  }
+                  ;
+                PUSH
+                  mutez
+                  0 ;
+                DUUP @borrowing ;
+                COMPARE ;
+                EQ ;
+                IF
+                  {
+                    PUSH
+                      string
+                      "No available funds to borrow." ;
+                    FAILWITH ;
+                  }
+                  {
+                    UNIT ;
+                  }
+                  ;
+                DROP ;
+                DIP
+                  {
+                    DROP ;
+                  }
+                  ;
+                DUUP ;
+                DUP ;
+                CAR ;
+                SWAP ;
+                CDR ;
+                DUP ;
+                CAR ;
+                SWAP ;
+                CDR ;
+                DUP ;
+                CAR ;
+                SWAP ;
+                CDR ;
+                DUP ;
+                CAR ;
+                SWAP ;
+                CDR ;
+                DUP ;
+                CAR ;
+                SWAP ;
+                CDR ;
+                CDR ;
+                DUUUUUUUP ;
+                DUUUUUUUUUP ;
+                CDDDDDAR ;
+                ADD ;
+                PAIR ;
+                SWAP ;
+                PAIR ;
+                SWAP ;
+                PAIR ;
+                SWAP ;
+                PAIR ;
+                SWAP ;
+                PAIR ;
+                SWAP ;
+                PAIR @s ;
+                DUUUUUUUP ;
+                DUUP ;
+                CAR ;
+                EXEC @owner_c ;
+                DUUUP ;
+                DIIIP
+                  {
+                    DROP ;
+                  }
+                  ;
+                UNIT ;
+                TRANSFER_TOKENS @op ;
+                SWAP ;
+                NIL
+                  operation
+                  ;
+                DUUUP ;
+                DIIIP
+                  {
+                    DROP ;
+                  }
+                  ;
+                CONS ;
+                PAIR ;
+              }
+              {
+                DUP ;
+                CAR ;
+                DUUUUUP @source ;
+                COMPARE ;
+                EQ ;
+                PUSH
+                  mutez
+                  0 ;
+                DUUUUUP @amount ;
+                COMPARE ;
+                GT ;
+                AND ;
+                IF
+                  {
+                    DUP ;
+                    CDDDDDAR @borrowed ;
+                    DUUUUP @amount ;
+                    COMPARE ;
+                    GT ;
+                    IF
+                      {
+                        PUSH
+                          string
+                          "Can't over-collateralize contract." ;
+                        FAILWITH ;
+                      }
+                      {
+                        UNIT ;
+                      }
+                      ;
+                    DROP ;
+                    DUP @s ;
+                    DUP ;
+                    CAR ;
+                    SWAP ;
+                    CDR ;
+                    DUP ;
+                    CAR ;
+                    SWAP ;
+                    CDR ;
+                    DUP ;
+                    CAR ;
+                    SWAP ;
+                    CDR ;
+                    DUP ;
+                    CAR ;
+                    SWAP ;
+                    CDR ;
+                    DUP ;
+                    CAR ;
+                    SWAP ;
+                    CDR ;
+                    CDR ;
+                    DUUUUUUUUUP @amount ;
+                    DUUUUUUUUP ;
+                    CDDDDDAR ;
+                    SUB ;
+                    PAIR ;
+                    SWAP ;
+                    PAIR ;
+                    SWAP ;
+                    PAIR ;
+                    SWAP ;
+                    PAIR ;
+                    SWAP ;
+                    PAIR ;
+                    SWAP ;
+                    PAIR @s ;
+                    NIL
+                      operation
+                      ;
+                    PAIR ;
+                  }
+                  {
+                    PUSH
+                      string
+                      "You shouldn't be here." ;
+                    FAILWITH ;
+                  }
+                  ;
+              }
+              ;
+          }
+          ;
+      }
+      ;
+    DIP
+      {
+        DROP ;
+        DROP ;
+        DROP ;
+        DROP ;
+        DROP ;
+        DROP ;
+        DROP ;
+        DROP ;
+        DROP ;
+      }
+      ;
+  }

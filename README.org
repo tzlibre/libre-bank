@@ -1,0 +1,45 @@
+* TzLibre Bond Bank
+TzLibre Bond Bank is a Liquidity smart contract deployed on the KYC-Tezos network.
+
+** Overview
+The purpose of this contract is to allow for trustless lending of XTZ. By spreading counterparty risk among multiple participants and by capping the borrowed amount, this contract allows users to withdraw their own deposit at any time, should collateralization reach a threshold they're not comfortable with.
+
+** Purpose
+TzLibre will borrow XTZ from this contract in order to increase its baking bonds. Larger baking bonds allow TzLibre to accept an ever growing number of delegations.
+
+** Initialization parameters
+- ~(owner: address)~: contract owner address.
+- ~(min_deposit: tez)~: minimum allowed deposit amount.
+- ~(withdraw_fee: nat)~: withdraw fee (expressed as a percentage) paid to the contract owner by the user during withdrawal.
+- ~(collat_coeff: nat)~: minimum collateralization, expressed as a percentage of deposits (/e.g./ if this value is set to 60% and users deposit a total of 100 XTZ on the contract, the contract owner can borrow up to 40 XTZ). 
+
+** Usage
+The contract allows 4 actions: 1) ~User deposit~, 2) ~User withdraw~, 3) ~Owner borrow~, 4) ~Owner payback~. None of them accepts any parameter (besides the transfer amount).
+
+*** ~User deposit~
+Triggered when a transaction of amount ~a~ is sent to the contract by a user. Deposited funds can be borrowed by the contract owner.
+
+#+BEG_CODE
+$ tezos-client transfer <a> from <user-address> to <bond-bank>
+#+END_CODE
+
+*** ~User withdraw~
+Triggered by a user to withdraw funds (and therefore stop lending XTZ to the contract owner).
+
+#+BEG_CODE
+$ tezos-client transfer 0 from <user-address> to <bond-bank>
+#+END_CODE
+
+*** ~Owner borrow~
+Triggered by contract owner to borrow funds from the contract. The maximum amount that can be borrowed is computed as ~(1 - collat_coef) * total_deposited_funds~.
+
+#+BEG_CODE
+$ tezos-client transfer 0 from <owner-address> to <bond-bank>
+#+END_CODE
+
+*** ~Owner payback~
+Triggered by contract owner to deposit funds back into the contract. 
+
+#+BEG_CODE
+$ tezos-client transfer <payback-amount> from <owner-address> to <bond-bank>
+#+END_CODE
