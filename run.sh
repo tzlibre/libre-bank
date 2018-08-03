@@ -38,10 +38,10 @@ tezos-client transfer 0 from $OWNER_ALIAS to $CONTRACT_ALIAS
 tezos-client transfer 0 from $USER1_ALIAS to $CONTRACT_ALIAS
 
 # User withdraw (USER2) -> fail
-# tezos-client transfer 0 from $USER2_ALIAS to $CONTRACT_ALIAS
+# tezos-client transfer 0.001 from $USER2_ALIAS to $CONTRACT_ALIAS
 
 # Owner payback
 tezos-client transfer 75 from $OWNER_ALIAS to $CONTRACT_ALIAS
 
 # User withdraw (USER2)
-tezos-client transfer 0 from $USER2_ALIAS to $CONTRACT_ALIAS
+tezos-client transfer 1 from $USER2_ALIAS to $CONTRACT_ALIAS

@@ -106,7 +106,7 @@ code
     NEQ ;
     PUSH
       mutez
-      0 ;
+      1000000 ;
     DUUUUUP @amount ;
     COMPARE ;
     GT ;
@@ -241,10 +241,10 @@ code
         NEQ ;
         PUSH
           mutez
-          0 ;
+          1000000 ;
         DUUUUUP @amount ;
         COMPARE ;
-        EQ ;
+        LE ;
         AND ;
         IF
           {
@@ -380,9 +380,11 @@ code
             DUUUUUUUUUUP @get_contract ;
             DUUUUUUUUUUP @source ;
             EXEC @source_c ;
-            DUUUP @fee_amount ;
-            DUUUUUUUP @user_balance ;
-            SUB @withdraw_amount ;
+            DUUUUUUUUUP @amount ;
+            DUUUUP @fee_amount ;
+            DUUUUUUUUP @user_balance ;
+            SUB ;
+            ADD @withdraw_amount ;
             UNIT ;
             TRANSFER_TOKENS @op_withdraw ;
             DUUUUP @s ;

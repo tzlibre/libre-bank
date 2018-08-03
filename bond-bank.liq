@@ -69,7 +69,7 @@ let%entry main
   (* User deposit                       *)
   (**************************************)
 
-  if (amount > 0tz) && (source <> s.owner) then
+  if (amount > 1tz) && (source <> s.owner) then
     let min_deposit = s.min_deposit in
 
     (* check transferred amount > min_deposit *)
@@ -92,7 +92,7 @@ let%entry main
   (* User Withdraw                      *)
   (**************************************)
 
-  else if (amount = 0tz) && (source <> s.owner) then
+  else if (amount <= 1tz) && (source <> s.owner) then
     (* check user is a depositor *)
     let user_balance = match Map.find source s.depositors with
       | None -> Current.failwith "Only depositors can withdraw.";
@@ -117,7 +117,7 @@ let%entry main
     let op_fee = Contract.call owner_c fee_amount () in
 
     (* send remainder to user *)
-    let withdraw_amount = user_balance - fee_amount in
+    let withdraw_amount = user_balance - fee_amount + amount in
     let source_c = get_contract source in
     let op_withdraw = Contract.call source_c withdraw_amount () in
 
