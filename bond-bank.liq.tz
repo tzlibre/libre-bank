@@ -4,18 +4,22 @@ storage
   (pair
     address
     (pair
-      mutez
+      nat
       (pair
-        nat
+        mutez
         (pair
           nat
           (pair
-            mutez
+            nat
             (pair
               mutez
-              (map
-                address
-                mutez)))))));
+              (pair
+                mutez
+                (pair
+                  (map
+                    address
+                    mutez)
+                  nat))))))));
 code
   {
     DUP ;
@@ -114,7 +118,7 @@ code
     IF
       {
         DUP ;
-        CDAR @min_deposit ;
+        CDDAR @min_deposit ;
         DUUUUP @amount ;
         COMPARE ;
         LT ;
@@ -130,6 +134,87 @@ code
           }
           ;
         DROP ;
+        DUP ;
+        CDDDDDDDAR ;
+        DUUUUUP @source ;
+        GET ;
+        IF_NONE
+          {
+            DUP @s ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            DROP ;
+            PUSH
+              nat
+              1 ;
+            DUUUUUUUUUUP ;
+            CDDDDDDDDR ;
+            ADD ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            DUUUUP @amount ;
+            PAIR ;
+          }
+          {
+            DUUP @s ;
+            DUUUUUP @amount ;
+            DUUUP @b ;
+            DIIIP
+              {
+                DROP ;
+              }
+              ;
+            ADD ;
+            PAIR ;
+          }
+          ;
+        RENAME @_user_balance_s
+          ;
+        DUP ;
+        CDR @s ;
         DUP @s ;
         DUP ;
         CAR ;
@@ -154,32 +239,26 @@ code
         DUP ;
         CAR ;
         SWAP ;
-        DROP ;
-        DUUUUUUUP ;
-        CDDDDDDR ;
-        DUUUUUUUUP ;
-        CDDDDDDR ;
-        DUUUUUUUUUUUUP @source ;
-        GET ;
-        IF_NONE
-          {
-            DUUUUUUUUUUP @amount ;
-          }
-          {
-            DUUUUUUUUUUUP @amount ;
-            SWAP ;
-            ADD ;
-          }
-          ;
-        RENAME @user_balance
-          ;
-        DUUUUUUUUUUUUP @source ;
+        CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
+        CDR ;
+        CDR ;
+        DUUUUUUUUUP ;
+        CDDDDDDDAR ;
+        DUUUUUUUUUUUP ;
+        CAR @user_balance ;
+        DUUUUUUUUUUUUUUUUP @source ;
         DIP
           {
             SOME ;
           }
           ;
         UPDATE ;
+        PAIR ;
+        SWAP ;
+        PAIR ;
         SWAP ;
         PAIR ;
         SWAP ;
@@ -192,7 +271,31 @@ code
         PAIR ;
         SWAP ;
         PAIR @s ;
-        DUP @s ;
+        DUP ;
+        CDAR ;
+        DUUP ;
+        CDDDDDDDDR ;
+        COMPARE ;
+        GT ;
+        IF
+          {
+            PUSH
+              string
+              "Maxiumum depositors has been reached." ;
+            FAILWITH ;
+          }
+          {
+            UNIT ;
+          }
+          ;
+        DROP ;
+        DIP
+          {
+            DROP ;
+            DROP ;
+          }
+          ;
+        DUP ;
         DUP ;
         CAR ;
         SWAP ;
@@ -209,16 +312,22 @@ code
         CAR ;
         SWAP ;
         CDR ;
+        DUP ;
+        CAR ;
+        SWAP ;
         CDR ;
-        DUUUUUUUUUP @amount ;
-        DUUUUUUUP ;
-        DIIIIIIIP
+        CDR ;
+        DUUUUUUUUUUP ;
+        DUUUUUUUUP ;
+        DIIIIIIIIP
           {
             DROP ;
           }
           ;
-        CDDDDAR ;
+        CDDDDDAR ;
         ADD ;
+        PAIR ;
+        SWAP ;
         PAIR ;
         SWAP ;
         PAIR ;
@@ -249,7 +358,7 @@ code
         IF
           {
             DUP ;
-            CDDDDDDR ;
+            CDDDDDDDAR ;
             DUUUUUP @source ;
             GET ;
             IF_NONE
@@ -296,11 +405,17 @@ code
             CAR ;
             SWAP ;
             CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
             CDR ;
-            DUUUUUUP @user_balance ;
-            DUUUUUUUUP ;
-            CDDDDAR ;
+            CDR ;
+            DUUUUUUUP @user_balance ;
+            DUUUUUUUUUP ;
+            CDDDDDAR ;
             SUB ;
+            PAIR ;
+            SWAP ;
             PAIR ;
             SWAP ;
             PAIR ;
@@ -334,15 +449,23 @@ code
             DUP ;
             CAR ;
             SWAP ;
-            DROP ;
-            DUUUUUUUP ;
-            CDDDDDDR ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            CDR ;
+            DUUUUUUUUUP ;
+            CDDDDDDDAR ;
             PUSH
               (option
                 mutez)
               None ;
-            DUUUUUUUUUUUUUUP @source ;
+            DUUUUUUUUUUUUUUUUP @source ;
             UPDATE ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
             SWAP ;
             PAIR ;
             SWAP ;
@@ -355,10 +478,78 @@ code
             PAIR ;
             SWAP ;
             PAIR @s ;
-            DUUUUUUUUUP @apply_coeff ;
+            DUP @s ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            CDR ;
+            DUP ;
+            CAR ;
+            SWAP ;
+            DROP ;
+            PUSH
+              nat
+              1 ;
+            DUUUUUUUUUUP ;
+            CDDDDDDDDR ;
+            SUB ;
+            DUP ;
+            ABS ;
+            SWAP ;
+            GE ;
+            IF
+              {}
+              {
+                PUSH
+                  string
+                  "Depositors counting error." ;
+                FAILWITH ;
+              }
+              ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR ;
+            SWAP ;
+            PAIR @s ;
+            DUUUUUUUUUUP @apply_coeff ;
             DUUP ;
-            CDDAR ;
-            DUUUUUP @user_balance ;
+            CDDDAR ;
+            DUUUUUUP @user_balance ;
             PAIR ;
             DIP
               {
@@ -370,19 +561,19 @@ code
               ;
             PAIR ;
             EXEC @fee_amount ;
-            DUUUUUUUUUP @get_contract ;
+            DUUUUUUUUUUP @get_contract ;
             DUUUP ;
             CAR ;
             EXEC @owner_c ;
             DUUP @fee_amount ;
             UNIT ;
             TRANSFER_TOKENS @op_fee ;
-            DUUUUUUUUUUP @get_contract ;
-            DUUUUUUUUUUP @source ;
+            DUUUUUUUUUUUP @get_contract ;
+            DUUUUUUUUUUUP @source ;
             EXEC @source_c ;
-            DUUUUUUUUUP @amount ;
+            DUUUUUUUUUUP @amount ;
             DUUUUP @fee_amount ;
-            DUUUUUUUUP @user_balance ;
+            DUUUUUUUUUP @user_balance ;
             SUB ;
             ADD @withdraw_amount ;
             UNIT ;
@@ -399,6 +590,7 @@ code
               ;
             DIIIIP
               {
+                DROP ;
                 DROP ;
                 DROP ;
                 DROP ;
@@ -533,9 +725,9 @@ code
                   ;
                 PAIR @get_compl_collat_value ;
                 DUUP ;
-                CDDDAR ;
-                DUUUP ;
                 CDDDDAR ;
+                DUUUP ;
+                CDDDDDAR ;
                 PAIR ;
                 DIP
                   {
@@ -548,7 +740,7 @@ code
                 PAIR ;
                 EXEC @max_borrowing ;
                 DUUP ;
-                CDDDDDAR ;
+                CDDDDDDAR ;
                 DUUP @max_borrowing ;
                 COMPARE ;
                 LT ;
@@ -566,7 +758,7 @@ code
                 DROP ;
                 DUUUP @contract_balance ;
                 DUUUP ;
-                CDDDDDAR ;
+                CDDDDDDAR ;
                 DUUUP @max_borrowing ;
                 SUB ;
                 PAIR ;
@@ -637,11 +829,17 @@ code
                 CAR ;
                 SWAP ;
                 CDR ;
+                DUP ;
+                CAR ;
+                SWAP ;
                 CDR ;
-                DUUUUUUUP ;
-                DUUUUUUUUUP ;
-                CDDDDDAR ;
+                CDR ;
+                DUUUUUUUUP ;
+                DUUUUUUUUUUP ;
+                CDDDDDDAR ;
                 ADD ;
+                PAIR ;
+                SWAP ;
                 PAIR ;
                 SWAP ;
                 PAIR ;
@@ -694,7 +892,7 @@ code
                 IF
                   {
                     DUP ;
-                    CDDDDDAR @borrowed ;
+                    CDDDDDDAR @borrowed ;
                     DUUUUP @amount ;
                     COMPARE ;
                     GT ;
@@ -731,11 +929,17 @@ code
                     CAR ;
                     SWAP ;
                     CDR ;
+                    DUP ;
+                    CAR ;
+                    SWAP ;
                     CDR ;
-                    DUUUUUUUUUP @amount ;
-                    DUUUUUUUUP ;
-                    CDDDDDAR ;
+                    CDR ;
+                    DUUUUUUUUUUP @amount ;
+                    DUUUUUUUUUP ;
+                    CDDDDDDAR ;
                     SUB ;
+                    PAIR ;
+                    SWAP ;
                     PAIR ;
                     SWAP ;
                     PAIR ;

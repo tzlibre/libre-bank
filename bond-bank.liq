@@ -9,6 +9,7 @@
 (* storage type *)
 type storage = {
   owner: address;                 (* contract owner *)
+  max_depositors: nat;            (* max number of users *)
   min_deposit: tez;               (* min amount a user can
                                      transfer to contract in single tx *)
   withdraw_fee: nat;              (* percentage withdrawal fee, in 10^6 *)
@@ -16,22 +17,26 @@ type storage = {
   deposited: tez;                 (* amount of XTZ deposited by lenders *)
   borrowed: tez;                  (* amount of XTZ borrowed *)
   depositors: (address, tez) map; (* depositor balance *)
+  depositors_size: nat;           (* number of depositors *)
 }
 
 let one_prec6 = 1000000p
 
-let%init storage (owner: address) (min_deposit: tez) (withdraw_fee: nat) (collat_coeff: nat) =
+let%init storage (owner: address) (max_depositors: nat) (min_deposit: tez) (withdraw_fee: nat) (collat_coeff: nat) =
   let deposited = 0tz in
   let borrowed = 0tz in
   let depositors = (Map []: (address, tez) map)  in
+  let depositors_size = 0p in
   {
     owner;
+    max_depositors;
     min_deposit;
     withdraw_fee;
     collat_coeff;
     deposited;
     borrowed;
     depositors;
+    depositors_size;
   }
 
 (* UTILS *)
@@ -72,16 +77,20 @@ let%entry main
   if (amount > 1tz) && (source <> s.owner) then
     let min_deposit = s.min_deposit in
 
-    (* check transferred amount > min_deposit *)
+    (* check transferred amount *)
     if amount < min_deposit then
       Current.failwith "Deposited amount is too small.";
 
     (* update user balance *)
-    let user_balance = match Map.find source s.depositors with
-      | None -> amount
-      | Some b -> b + amount
+    let (user_balance, s) = match Map.find source s.depositors with
+      | None -> (amount, s.depositors_size <- s.depositors_size + 1p)
+      | Some b -> (b + amount, s)
     in
     let s = s.depositors <- Map.add source user_balance s.depositors in
+    
+    (* check depositors_size *)
+    if s.depositors_size > s.max_depositors then
+      Current.failwith "Maxiumum depositors has been reached.";
 
     (* update deposited *)
     let s = s.deposited <- s.deposited + amount in
@@ -109,6 +118,13 @@ let%entry main
     (* remove user from depositors *)
     let s = s.depositors <-
         Map.update source (None: tez option) s.depositors
+    in
+
+    (* update depositors_size *)
+    let s = s.depositors_size <-
+        match%nat (s.depositors_size - 1p) with
+        | Minus _ -> Current.failwith "Depositors counting error.";
+        | Plus p -> p
     in
 
     (* send fee to owner *)
