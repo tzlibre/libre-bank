@@ -9,6 +9,7 @@ TzLibre will borrow XTZ from the contract in order to increase its baking bonds.
 
 ** Initialization parameters
 - ~(owner: address)~: contract owner (TzLibre) address.
+- ~(max_depositors: nat)~: maximum number of users.
 - ~(min_deposit: tez)~: minimum allowed deposit amount.
 - ~(withdraw_fee: nat)~: withdraw fee (expressed as a percentage) paid to the contract owner (TzLibre) by the user during withdrawal.
 - ~(collat_coeff: nat)~: minimum collateralization, expressed as a percentage of deposits (/e.g./ if this value is set to 60% and users deposit a total of 100K XTZ on the contract, the contract owner can borrow up to 40K XTZ). 
