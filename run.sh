@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONTRACT_ALIAS="tzlibre-bond-bank"
+CONTRACT_ALIAS="tzlibre-libre-bank"
 OWNER_ALIAS="owner"
 USER1_ALIAS="user1"
 USER2_ALIAS="user2"
@@ -15,7 +15,7 @@ MIN_FUNDING=$[100*$ONEP6] # 100 XTZ
 WITHDRAW_FEE=$ONEP3       # 0.1% 
 COLL_COEFF=$[750*$ONEP3]  # 75%
 tezos-client originate contract $CONTRACT_ALIAS for $OWNER_ALIAS \
-transferring 0 from $OWNER_ALIAS running bond-bank.liq.tz \
+transferring 0 from $OWNER_ALIAS running libre-bank.liq.tz \
 --init "Pair \"$OWNER\" (Pair $MIN_FUNDING (Pair $WITHDRAW_FEE (Pair $COLL_COEFF (Pair 0 (Pair 0 {})))))" \
 --delegate $OWNER --delegatable
 ##################################################
